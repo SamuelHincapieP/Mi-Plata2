@@ -194,3 +194,71 @@ public class AccountServiceImpl implements AccountService {
         System.out.println("  Nuevo saldo: $" + String.format("%.2f", origin.getBalance()));
         return true;
     }
+
+    // ── MP-9: Compra credito ───────────────────────────────────────────────
+    @Override
+    public boolean creditPurchase(int clientId, double amount, String description) {
+        Account account = validarCuentaActiva(clientId);
+        if (account == null) return false;
+
+        if (account.getAccountType() != AccountTypeEnum.CUENTA_CREDITO) {
+            System.out.println("  [!] Solo aplica para cuentas de credito.");
+            return false;
+        }
+        if (amount <= 0) {
+            System.out.println("  [!] El monto debe ser mayor a 0.");
+            return false;
+        }
+
+        double nuevaDeuda = account.getBalance() - amount;
+        if (nuevaDeuda < -10000000) {
+            System.out.println("  [!] Cupo insuficiente. Disponible: $"
+                    + String.format("%.2f", account.getBalance() + 10000000));
+            return false;
+        }
+
+        account.setBalance(nuevaDeuda);
+        accountRepository.updateAccount(account);
+        registrarMovimiento(account, MovementTypeEnum.COMPRA_CREDITO,
+                amount, "Compra: " + description);
+
+        System.out.println("  [OK] Compra realizada!");
+        System.out.println("  Cupo usado: $" + String.format("%.2f", Math.abs(account.getBalance())));
+        System.out.println("  Cupo disponible: $"
+                + String.format("%.2f", 10000000 + account.getBalance()));
+        return true;
+    }
+
+    // ── Privados ───────────────────────────────────────────────────────────
+    private Account validarCuentaActiva(int clientId) {
+        Client client = clientRepository.findClientById(clientId);
+        if (client == null) {
+            System.out.println("  [!] Cliente no encontrado.");
+            return null;
+        }
+        Account account = accountRepository.findAccountByClientId(clientId);
+        if (account == null) {
+            System.out.println("  [!] No tiene cuenta registrada.");
+            return null;
+        }
+        if (account.getAccountState() == AccountState.BLOQUEADA) {
+            System.out.println("  [!] Cuenta BLOQUEADA. Contacte soporte.");
+            return null;
+        }
+        if (account.getAccountState() == AccountState.SUSPENDIDA) {
+            System.out.println("  [!] Cuenta SUSPENDIDA.");
+            return null;
+        }
+        return account;
+    }
+
+    private void registrarMovimiento(Account account, MovementTypeEnum type,
+                                     double amount, String desc) {
+        String fecha = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        Movement movement = new Movement(nextMovementId++, type, amount,
+                account.getBalance(), desc, account.getId());
+        movement.setDate(fecha);
+        account.getMovements().add(movement);
+    }
+}
