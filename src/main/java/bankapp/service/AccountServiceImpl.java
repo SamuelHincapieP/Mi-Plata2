@@ -83,3 +83,23 @@ public class AccountServiceImpl implements AccountService {
         System.out.println(account);
         return account;
     }
+
+    // ── MP-5: Consignar ────────────────────────────────────────────────────
+    @Override
+    public Account deposit(int clientId, double amount) {
+        Account account = validarCuentaActiva(clientId);
+        if (account == null) return null;
+
+        if (amount <= 0) {
+            System.out.println("  [!] El monto debe ser mayor a 0.");
+            return account;
+        }
+
+        account.setBalance(account.getBalance() + amount);
+        accountRepository.updateAccount(account);
+        registrarMovimiento(account, MovementTypeEnum.CONSIGNACION, amount, "Consignacion");
+
+        System.out.println("  [OK] Consignacion exitosa!");
+        System.out.println("  Nuevo saldo: $" + String.format("%.2f", account.getBalance()));
+        return account;
+    }
