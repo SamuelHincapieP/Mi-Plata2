@@ -129,3 +129,23 @@ public class AccountServiceImpl implements AccountService {
         System.out.println("  Nuevo saldo: $" + String.format("%.2f", account.getBalance()));
         return account;
     }
+
+    // ── MP-7: Movimientos ──────────────────────────────────────────────────
+    @Override
+    public void getMovements(int clientId) {
+        Account account = accountRepository.findAccountByClientId(clientId);
+        if (account == null) {
+            System.out.println("  [!] No tiene cuenta registrada.");
+            return;
+        }
+        List<Movement> movements = account.getMovements();
+        if (movements.isEmpty()) {
+            System.out.println("  No hay movimientos registrados.");
+            return;
+        }
+        System.out.println("\n--- Movimientos de " + account.getAccountNumber() + " ---");
+        for (Movement m : movements) {
+            System.out.println(m);
+        }
+        System.out.println("  Saldo actual: $" + String.format("%.2f", account.getBalance()));
+    }
