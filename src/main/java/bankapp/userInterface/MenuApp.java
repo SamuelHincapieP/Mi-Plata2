@@ -1,8 +1,8 @@
 package bankapp.userinterface;
 
 import bankapp.domain.Client;
-import bankapp.service.AuthService;
-import bankapp.utils.ClientFormValidation;
+import bankapp.services.AuthService;
+import bankapp.utils.FormValidator;
 import bankapp.view.AccountView;
 import bankapp.view.AdminView;
 import bankapp.view.ClientView;
@@ -28,7 +28,7 @@ public class MenuApp {
         System.out.println("   Bienvenido a Mi Plata     ");
         System.out.println("=============================");
 
-        int init = ClientFormValidation.validateInt("Presione 1 para iniciar, 0 para salir");
+        int init = FormValidator.validateInt("Presione 1 para iniciar, 0 para salir");
 
         while (init != 0) {
             System.out.println("\n=== MENU PRINCIPAL ===");
@@ -36,7 +36,7 @@ public class MenuApp {
             System.out.println("2. Iniciar Sesion");
             System.out.println("3. Salir");
 
-            int option = ClientFormValidation.validateInt("Seleccione una opcion");
+            int option = FormValidator.validateInt("Seleccione una opcion");
 
             switch (option) {
                 case 1:
@@ -61,18 +61,18 @@ public class MenuApp {
         System.out.println("1. Soy Cliente");
         System.out.println("2. Soy Administrador");
 
-        int tipo = ClientFormValidation.validateInt("Seleccione una opcion");
+        int tipo = FormValidator.validateInt("Seleccione una opcion");
 
         if (tipo == 1) {
-            String email    = ClientFormValidation.readLine("Ingrese su correo");
-            String password = ClientFormValidation.readLine("Ingrese su clave");
+            String email    = FormValidator.readLine("Ingrese su correo");
+            String password = FormValidator.readLine("Ingrese su clave");
             Client client = authService.loginClient(email, password);
             if (client != null) {
                 showMenuClient(client);
             }
         } else if (tipo == 2) {
-            String email    = ClientFormValidation.readLine("Correo administrador");
-            String password = ClientFormValidation.readLine("Clave administrador");
+            String email    = FormValidator.readLine("Correo administrador");
+            String password = FormValidator.readLine("Clave administrador");
             boolean ok = authService.loginAdmin(email, password);
             if (ok) {
                 showMenuAdmin();
@@ -98,7 +98,7 @@ public class MenuApp {
             System.out.println("8. Ver mi perfil");
             System.out.println("9. Cerrar sesion");
 
-            int option = ClientFormValidation.validateInt("Seleccione una opcion");
+            int option = FormValidator.validateInt("Seleccione una opcion");
 
             switch (option) {
                 case 1:
@@ -141,7 +141,7 @@ public class MenuApp {
             System.out.println("1. Gestionar Clientes");
             System.out.println("2. Cerrar sesion");
 
-            int option = ClientFormValidation.validateInt("Seleccione una opcion");
+            int option = FormValidator.validateInt("Seleccione una opcion");
 
             switch (option) {
                 case 1:
@@ -167,14 +167,14 @@ public class MenuApp {
             System.out.println("5. Eliminar cliente");
             System.out.println("6. Volver");
 
-            int option = ClientFormValidation.validateInt("Seleccione una opcion");
+            int option = FormValidator.validateInt("Seleccione una opcion");
 
             switch (option) {
                 case 1:
                     adminView.getAllClients();
                     break;
                 case 2:
-                    int id = ClientFormValidation.validateInt("Ingrese el ID del cliente");
+                    int id = FormValidator.validateInt("Ingrese el ID del cliente");
                     clientView.getClientById(id);
                     break;
                 case 3:

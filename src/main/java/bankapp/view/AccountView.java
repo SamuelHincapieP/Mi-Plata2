@@ -1,7 +1,7 @@
 package bankapp.view;
 
-import bankapp.service.AccountService;
-import bankapp.utils.ClientFormValidation;
+import bankapp.services.input.AccountService;
+import bankapp.utils.FormValidator;
 
 public class AccountView {
 
@@ -20,12 +20,12 @@ public class AccountView {
     }
 
     public void consignar(int clientId) {
-        double amount = ClientFormValidation.validateDouble("Ingrese el monto a consignar");
+        double amount = FormValidator.validateDouble("Ingrese el monto a consignar");
         accountService.deposit(clientId, amount);
     }
 
     public void retirar(int clientId) {
-        double amount = ClientFormValidation.validateDouble("Ingrese el monto a retirar");
+        double amount = FormValidator.validateDouble("Ingrese el monto a retirar");
         accountService.withdraw(clientId, amount);
     }
 
@@ -34,15 +34,15 @@ public class AccountView {
     }
 
     public void transferir(int clientId) {
-        String toAccountNumber = ClientFormValidation.validateString(
+        String toAccountNumber = FormValidator.validateString(
                 "Ingrese el numero de cuenta destino");
-        double amount = ClientFormValidation.validateDouble("Ingrese el monto a transferir");
+        double amount = FormValidator.validateDouble("Ingrese el monto a transferir");
         accountService.transfer(clientId, toAccountNumber, amount);
     }
 
     public void comprarConCredito(int clientId) {
-        double amount = ClientFormValidation.validateDouble("Ingrese el monto de la compra");
-        String description = ClientFormValidation.validateString("Descripcion de la compra");
+        double amount = FormValidator.validateDouble("Ingrese el monto de la compra");
+        String description = FormValidator.validateString("Descripcion de la compra");
         accountService.creditPurchase(clientId, amount, description);
     }
 }

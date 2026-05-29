@@ -1,7 +1,7 @@
 package bankapp.view;
 
 import bankapp.domain.Admin;
-import bankapp.service.AdminServiceImpl;
+import bankapp.services.AdminServiceImpl;
 
 public class AdminView {
 

@@ -1,8 +1,8 @@
 package bankapp.view;
 
 import bankapp.domain.Client;
-import bankapp.service.ClientService;
-import bankapp.utils.ClientFormValidation;
+import bankapp.services.input.ClientService;
+import bankapp.utils.FormValidator;
 
 public class ClientView {
 
@@ -24,12 +24,12 @@ public class ClientView {
     }
 
     public void updateClient() {
-        int id = ClientFormValidation.validateInt("Ingrese el ID del cliente a modificar");
+        int id = FormValidator.validateInt("Ingrese el ID del cliente a modificar");
         clientService.updateClient(id);
     }
 
     public void deleteClient() {
-        int id = ClientFormValidation.validateInt("Ingrese el ID del cliente a eliminar");
+        int id = FormValidator.validateInt("Ingrese el ID del cliente a eliminar");
         clientService.deleteClient(id);
     }
 }
