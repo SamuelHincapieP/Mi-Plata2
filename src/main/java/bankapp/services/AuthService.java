@@ -63,7 +63,6 @@ public class AuthService {
         // MP-2 Inicio de sesión — login exitoso: resetear intentos y retornar cliente
         client.setAttemptsFailed(0);
         clientRepository.updateClient(client);
-        System.out.println("Bienvenido, " + client.getName() + "!");
         return client;
     }
 

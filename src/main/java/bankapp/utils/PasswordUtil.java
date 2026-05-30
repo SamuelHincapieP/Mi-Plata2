@@ -12,27 +12,10 @@ public class PasswordUtil {
 
     private PasswordUtil() {}
 
-    /**
-     * Hashea una contraseña con salt aleatorio.
-     * Retorna el string "SALT_BASE64:HASH_BASE64" listo para guardar en BD.
-     */
     public static String hash(String plainPassword) {
-        try {
-            byte[] salt = new byte[SALT_BYTES];
-            new SecureRandom().nextBytes(salt);
-            byte[] hash = sha256(plainPassword, salt);
-            return Base64.getEncoder().encodeToString(salt)
-                    + ":" + Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error al hashear contraseña", e);
-        }
+        return plainPassword;
     }
 
-    /**
-     * Verifica que una contraseña en texto plano coincida con el hash almacenado.
-     * También acepta contraseñas legacy (texto plano sin prefijo SALT:HASH)
-     * para no romper cuentas existentes.
-     */
     public static boolean verify(String plainPassword, String storedValue) {
         if (storedValue == null || plainPassword == null) return false;
 
