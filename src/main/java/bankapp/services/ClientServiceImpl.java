@@ -1,151 +1,81 @@
 package bankapp.services;
 
 import bankapp.domain.Client;
-import bankapp.persintence.repository.ClientRepositoryAdapterMySql;
 import bankapp.services.input.ClientService;
-import bankapp.utils.FormValidator;
+import bankapp.services.outputport.ClientPersistencePort;
+import bankapp.utils.PasswordUtil;
 
 import java.util.Optional;
 
+/**
+ * Lógica de negocio para clientes.
+ *
+ * Historias de usuario cubiertas:
+ *   MP-1  — Registro de cliente
+ *   MP-3  — Administración de usuarios
+ *   MP-10 — Editar perfil
+ *   MP-11 — Cambio de contraseña
+ *   MP-21 — Recuperar contraseña
+ *   MP-23 — Buscar usuario por documento
+ *   MP-24 — Eliminar usuario
+ *   MP-25 — Actualizar información personal
+ */
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepositoryAdapterMySql clientRepositoryAdapterMySql;
+    private final ClientPersistencePort clientRepository;
 
-    public ClientServiceImpl(ClientRepositoryAdapterMySql clientRepositoryAdapterMySql) {
-        this.clientRepositoryAdapterMySql = clientRepositoryAdapterMySql;
+    public ClientServiceImpl(ClientPersistencePort clientRepository) {
+        this.clientRepository = clientRepository;
     }
 
-    // ── MP-1: Registro de cliente ──────────────────────────────────────────
+    // MP-1 Registro de cliente — crear cliente con intentosFallidos=0 y cuentaBloqueada=false
     @Override
-    public Client createClient() {
+    public Client createClient(String name, String email, String password, String clientType) {
+        if (clientRepository.findClientByEmail(email) != null) {
+            System.out.println("Ese correo ya esta registrado. Ingrese uno diferente.");
+            return null;
+        }
         Client client = new Client();
-
-        client.setId(clientRepositoryAdapterMySql.getNextId());
-        System.out.println("ID asignado automaticamente: " + client.getId());
-
-        client.setName(FormValidator.validateString("Ingrese el nombre completo"));
-
-        // Email: formato valido y unico
-        while (true) {
-            String email = FormValidator.validateString("Ingrese el correo electronico");
-            if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-                System.out.println("  [!] Correo invalido. Formato: ejemplo@correo.com");
-                continue;
-            }
-            if (clientRepositoryAdapterMySql.findClientByEmail(email) != null) {
-                System.out.println("  [!] Ese correo ya esta registrado. Use otro.");
-                continue;
-            }
-            client.setEmail(email);
-            break;
-        }
-
-        // Password segura
-        while (true) {
-            String password = FormValidator.validateString(
-                    "Ingrese la clave (min 8 caracteres, 1 mayuscula, 1 numero, 1 especial @#$%^&+=!*)");
-            if (!FormValidator.validatePassword(password)) {
-                System.out.println("  [!] Clave no segura. Ejemplo valido: Hola123!");
-                continue;
-            }
-            client.setPassword(password);
-            break;
-        }
-
+        client.setName(name);
+        client.setEmail(email);
+        client.setPassword(PasswordUtil.hash(password));
         client.setAttemptsFailed(0);
         client.setAccountBlocked(false);
-        client.setClientType(ClientTypeSelector.selectClientType());
-
-        Client saved = clientRepositoryAdapterMySql.saveClient(client);
-        if (saved != null) {
-            System.out.println("  [OK] Cliente registrado exitosamente!");
-            System.out.println(saved);
-        }
-        return saved;
+        client.setClientType(clientType);
+        return clientRepository.saveClient(client);
     }
 
+    // MP-23 Buscar usuario por documento — buscar cliente por ID
     @Override
     public Client getClientById(int id) {
-        Client client = clientRepositoryAdapterMySql.findClientById(id);
-        if (client == null) {
-            System.out.println("  [!] No existe cliente con ID " + id);
-        }
-        return client;
+        return clientRepository.findClientById(id);
     }
 
     @Override
     public Optional<Client> getClientByEmail(String email) {
-        return Optional.ofNullable(clientRepositoryAdapterMySql.findClientByEmail(email));
+        return Optional.ofNullable(clientRepository.findClientByEmail(email));
     }
 
-    // ── MP-3: Actualizar cliente ───────────────────────────────────────────
+    // MP-10 Editar perfil / MP-11 Cambio de contraseña / MP-21 Recuperar contraseña
+    // MP-25 Actualizar información personal — actualizar campos del cliente
     @Override
-    public Client updateClient(int id) {
-        Client client = clientRepositoryAdapterMySql.findClientById(id);
-
-        if (client == null) {
-            System.out.println("  [!] Cliente con ID " + id + " no encontrado.");
+    public Client updateClient(int id, String name, String email, String password, String clientType) {
+        Client client = clientRepository.findClientById(id);
+        if (client != null) {
+            client.setName(name);
+            client.setEmail(email);
+            client.setPassword(PasswordUtil.hash(password));
+            client.setClientType(clientType);
+            return clientRepository.updateClient(client);
+        } else {
+            System.out.println("Cliente no encontrado con ID: " + id);
             return null;
         }
-
-        System.out.println("Que desea actualizar?");
-        System.out.println("1. Nombre   2. Correo   3. Clave   4. Tipo cliente");
-
-        int option = FormValidator.validateInt("Opcion");
-
-        switch (option) {
-            case 1:
-                client.setName(FormValidator.validateString("Nuevo nombre"));
-                break;
-            case 2:
-                while (true) {
-                    String email = FormValidator.validateString("Nuevo correo");
-                    if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-                        System.out.println("  [!] Correo invalido.");
-                        continue;
-                    }
-                    Client existing = clientRepositoryAdapterMySql.findClientByEmail(email);
-                    if (existing != null && existing.getId() != id) {
-                        System.out.println("  [!] Ese correo ya esta en uso.");
-                        continue;
-                    }
-                    client.setEmail(email);
-                    break;
-                }
-                break;
-            case 3:
-                while (true) {
-                    String password = FormValidator.validateString("Nueva clave");
-                    if (!FormValidator.validatePassword(password)) {
-                        System.out.println("  [!] Clave no segura. Ejemplo: Hola123!");
-                        continue;
-                    }
-                    client.setPassword(password);
-                    break;
-                }
-                break;
-            case 4:
-                client.setClientType(ClientTypeSelector.selectClientType());
-                break;
-            default:
-                System.out.println("  [!] Opcion no valida.");
-                return client;
-        }
-
-        clientRepositoryAdapterMySql.updateClient(client.getId());
-        System.out.println("  [OK] Cliente actualizado exitosamente!");
-        return client;
     }
 
-    // ── MP-3: Eliminar cliente ─────────────────────────────────────────────
+    // MP-24 Eliminar usuario — eliminar cliente de la BD
     @Override
     public void deleteClient(int id) {
-        Client client = clientRepositoryAdapterMySql.findClientById(id);
-        if (client == null) {
-            System.out.println("  [!] Cliente con ID " + id + " no encontrado.");
-            return;
-        }
-        clientRepositoryAdapterMySql.deleteClient(id);
-        System.out.println("  [OK] Cliente eliminado exitosamente.");
+        clientRepository.deleteClient(id);
     }
 }

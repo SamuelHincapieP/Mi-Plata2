@@ -1,27 +1,45 @@
 package bankapp.services.input;
 
 import bankapp.domain.Account;
+import bankapp.domain.Movement;
+import bankapp.domain.TarjetaCredito;
 
-public interface  AccountService {
+import java.util.List;
+import java.util.Optional;
 
-    // MP-4: Consultar saldo
-    public Account getAccountByClientId(int clientId);
+public interface AccountService {
 
-    // MP-5: Consignar dinero
-    public Account deposit(int clientId, double amount);
+    Account createAccount(int usuarioID, int tipoCuentaID, double saldoInicial, double cupoTC);
 
-    // MP-6: Retirar dinero
-    public Account withdraw(int clientId, double amount);
+    Optional<Account> getAccountByUsuarioID(int usuarioID);
 
-    // MP-7: Consultar movimientos
-    public void getMovements(int clientId);
+    // Version silenciosa: no imprime nada, usada internamente (ej: cargar perfil)
+    Optional<Account> getAccountByUsuarioIDSilent(int usuarioID);
+
+    // MP-5: Consignar
+    Account deposit(int usuarioID, double amount);
+
+    // MP-6: Retirar
+    Account withdraw(int usuarioID, double amount);
+
+    // MP-7: Movimientos
+    List<Movement> getMovements(int usuarioID);
 
     // MP-8: Transferencia
-    public boolean transfer(int fromClientId, String toAccountNumber, double amount);
+    boolean transfer(int fromUsuarioID, String toNumeroCuenta, double amount);
 
-    // MP-9: Compra con tarjeta de credito
-    public boolean creditPurchase(int clientId, double amount, String description);
+    // MP-9: Compra TC
+    boolean creditPurchase(int usuarioID, double amount, String description, int cuotas);
 
-    // Crear cuenta para un cliente
-    public Account createAccount(int clientId);
+    // Ver tarjeta
+    Optional<TarjetaCredito> getTarjetaByUsuarioID(int usuarioID);
+
+    // Interés mensual cuenta ahorros
+    void aplicarInteresAhorros(int usuarioID);
+
+    // Cobro mensual por sobregiro en cuenta corriente
+    void aplicarCargoCorriente(int usuarioID);
+
+    // Pago de cuota mensual tarjeta de crédito
+    boolean pagarTarjetaCredito(int usuarioID, double monto);
 }

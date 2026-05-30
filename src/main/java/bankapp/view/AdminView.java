@@ -10,6 +10,7 @@ import bankapp.utils.FormValidator;
 
 import java.util.List;
 
+
 public class AdminView {
 
     private final AdminServiceImpl   adminService;

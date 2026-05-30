@@ -6,13 +6,13 @@ public class ClientTypeSelector {
 
     public static String selectClientType() {
         while (true) {
-            System.out.println("Seleccione el tipo de cliente:");
-            System.out.println("1. Nuevo   2. Antiguo");
+            System.out.println("Seleccione 1. Natural  2. Juridico");
             int option = FormValidator.validateInt("Opcion");
             switch (option) {
-                case 1: return "Nuevo";
-                case 2: return "Antiguo";
-                default: System.out.println("  [!] Seleccione 1 o 2.");
+                case 1: return "NATURAL";
+                case 2: return "JURIDICO";
+                default:
+                    System.out.println("Seleccione una opcion valida (1 o 2)");
             }
         }
     }
