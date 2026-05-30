@@ -1,4 +1,9 @@
-package bankapp.persintence.mapper;
+package bankapp.persistence.mapper;
 
-public interface RowMapper {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public interface RowMapper<T> {
+
+    T mapRow(ResultSet rs) throws SQLException;
 }
