@@ -1,4 +1,4 @@
-package bankapp.config;
+package bankapp.Config;
 
 import bankapp.persistence.database.DataBaseConnectionMySql;
 import bankapp.persistence.mapper.AccountRowMapper;

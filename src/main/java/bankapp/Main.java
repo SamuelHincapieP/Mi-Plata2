@@ -1,6 +1,6 @@
 package bankapp;
 
-import bankapp.config.Config;
+import bankapp.Config.Config;
 import bankapp.userinterface.MenuApp;
 
 public class Main {
