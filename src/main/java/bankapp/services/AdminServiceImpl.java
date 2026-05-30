@@ -2,57 +2,66 @@ package bankapp.services;
 
 import bankapp.domain.Admin;
 import bankapp.domain.Client;
-import bankapp.persintence.repository.ClientRepositoryAdapterMySql;
 import bankapp.services.input.AdminService;
 import bankapp.services.input.ClientAdminService;
+import bankapp.services.outputport.AdminPersistencePort;
+import bankapp.services.outputport.ClientPersistencePort;
+import bankapp.utils.PasswordUtil;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AdminServiceImpl implements AdminService, ClientAdminService {
 
-    private final ClientRepositoryAdapterMySql clientRepositoryAdapterMySql;
+    private final ClientPersistencePort clientRepository;
+    private final AdminPersistencePort  adminRepository;
 
-    public AdminServiceImpl(Admin admin, ClientRepositoryAdapterMySql clientRepositoryAdapterMySql) {
-        this.clientRepositoryAdapterMySql = clientRepositoryAdapterMySql;
+    public AdminServiceImpl(ClientPersistencePort clientRepository,
+                            AdminPersistencePort adminRepository) {
+        this.clientRepository = clientRepository;
+        this.adminRepository  = adminRepository;
     }
 
+    // MP-39 Crear administrador — validar correo duplicado, guardar con rol=admin y permisos=FULL
     @Override
-    public Admin createAdmin(Admin admin) {
-        return null;
+    public Admin createAdmin(String name, String email, String password, String cargo) {
+
+        if (clientRepository.findClientByEmail(email) != null) {
+            System.out.println("Ese correo ya esta registrado como cliente");
+            return null;
+        }
+        if (adminRepository.findAdminByEmail(email) != null) {
+            System.out.println("Ese correo ya esta registrado como administrador");
+            return null;
+        }
+
+        Admin admin = new Admin();
+        admin.setName(name);
+        admin.setEmail(email);
+        admin.setPassword(PasswordUtil.hash(password));
+        admin.setRol("admin");
+        admin.setCargo(cargo);
+        admin.setPermissions("FULL");
+        admin.setAttemptsFailed(0);
+        admin.setAccountBlocked(false);
+
+        return adminRepository.saveAdmin(admin);
     }
 
-    @Override
-    public Optional<Admin> getAdminById(int id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Admin> getAdminByEmail(String email) {
-        return Optional.empty();
-    }
-
+    // MP-40 Listar administradores — traer todos los administradores
     @Override
     public List<Admin> getAllAdmins() {
-        return List.of();
+        return adminRepository.findAllAdmins();
     }
 
-    @Override
-    public Admin updateAdmin(Admin admin) {
-        return null;
-    }
-
-    @Override
-    public void deleteAdmin(int id) {
-    }
-
+    // MP-3 Administración de usuarios / MP-22 Listar usuarios registrados — listar clientes
     @Override
     public List<Client> getAllClients() {
-        return clientRepositoryAdapterMySql.findAllClients();
+        return clientRepository.findAllClients();
     }
 
+    // MP-24 Eliminar usuario — eliminar cliente desde el admin
     @Override
     public void deleteClient(int id) {
-        clientRepositoryAdapterMySql.deleteClient(id);
+        clientRepository.deleteClient(id);
     }
 }
