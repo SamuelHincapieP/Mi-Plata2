@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ClientAdminService {
 
-    public List<Client> getAllClients();
-    public void deleteClient(int id);
+    List<Client> getAllClients();
+    void deleteClient(int id);
 }

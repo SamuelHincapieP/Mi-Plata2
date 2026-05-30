@@ -16,24 +16,7 @@ import bankapp.services.outputport.TarjetaCreditoPersistencePort;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Servicio principal de operaciones financieras.
- *
- * Historias de usuario cubiertas:
- *   MP-4  — Consultar saldo
- *   MP-5  — Consignar dinero
- *   MP-6  — Retirar dinero
- *   MP-7  — Consultar movimientos
- *   MP-8  — Transferencias
- *   MP-9  — Compra con tarjeta de crédito
- *   MP-26 — Mensaje de transacción exitosa
- *   MP-27 — Filtrar movimientos por fecha
- *   MP-34 — Abrir cuenta bancaria
- *   MP-35 — Ver tarjeta de crédito
- *   MP-36 — Pagar tarjeta de crédito
- *   MP-37 — Aplicar interés mensual a cuenta de ahorros
- *   MP-38 — Aplicar cargo mensual por sobregiro
- */
+
 public class AccountServiceImpl implements AccountService {
 
     private static final int TIPO_AHORROS   = 1;

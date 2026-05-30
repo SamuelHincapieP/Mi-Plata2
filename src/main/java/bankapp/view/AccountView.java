@@ -6,6 +6,7 @@ import bankapp.services.input.AccountService;
 import bankapp.utils.FormRuleValidator;
 import bankapp.utils.FormValidator;
 
+
 public class AccountView {
 
     private final AccountService accountService;
