@@ -1,59 +1,84 @@
 package bankapp.domain;
 
-import bankapp.domain.enums.MovementTypeEnum;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class Movement {
 
-    private int id;
-    private MovementTypeEnum movementType;
-    private double amount;
-    private double balanceAfter;
-    private String description;
-    private String date;
-    private int accountId;
+    private int    movimientoID;
+    private double montoMovimiento;
+    private String fechaMovimiento;
+    private String descripcionMovimiento;
+    private double saldoPosterior;
+    private int    cuentaID;
+    private int    tipoID;
 
-    public Movement(int id, MovementTypeEnum movementType, double amount,
-                    double balanceAfter, String description, int accountId) {
-        this.id = id;
-        this.movementType = movementType;
-        this.amount = amount;
-        this.balanceAfter = balanceAfter;
-        this.description = description;
-        this.accountId = accountId;
-        this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-    }
+    // Nombre legible del tipo — se resuelve al mapear desde BD
+    private String tipoNombre;
 
     public Movement() {}
 
-    // get y set
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Movement(int movimientoID, double montoMovimiento, String fechaMovimiento,
+                    String descripcionMovimiento, double saldoPosterior,
+                    int cuentaID, int tipoID) {
+        this.movimientoID           = movimientoID;
+        this.montoMovimiento        = montoMovimiento;
+        this.fechaMovimiento        = fechaMovimiento;
+        this.descripcionMovimiento  = descripcionMovimiento;
+        this.saldoPosterior         = saldoPosterior;
+        this.cuentaID               = cuentaID;
+        this.tipoID                 = tipoID;
+    }
 
-    public MovementTypeEnum getMovementType() { return movementType; }
-    public void setMovementType(MovementTypeEnum movementType) { this.movementType = movementType; }
+    public int    getMovimientoID()   { return movimientoID; }
+    public void   setMovimientoID(int movimientoID)  { this.movimientoID = movimientoID; }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public double getMontoMovimiento()  { return montoMovimiento; }
+    public void   setMontoMovimiento(double montoMovimiento) { this.montoMovimiento = montoMovimiento; }
 
-    public double getBalanceAfter() { return balanceAfter; }
-    public void setBalanceAfter(double balanceAfter) { this.balanceAfter = balanceAfter; }
+    public String getFechaMovimiento()  { return fechaMovimiento; }
+    public void   setFechaMovimiento(String fechaMovimiento) { this.fechaMovimiento = fechaMovimiento; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescripcionMovimiento() { return descripcionMovimiento; }
+    public void   setDescripcionMovimiento(String d) { this.descripcionMovimiento = d; }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public double getSaldoPosterior()  { return saldoPosterior; }
+    public void   setSaldoPosterior(double saldoPosterior) { this.saldoPosterior = saldoPosterior; }
 
-    public int getAccountId() { return accountId; }
-    public void setAccountId(int accountId) { this.accountId = accountId; }
+    public int    getCuentaID()  { return cuentaID; }
+    public void   setCuentaID(int cuentaID) { this.cuentaID = cuentaID; }
 
+    public int    getTipoID()    { return tipoID; }
+    public void   setTipoID(int tipoID) { this.tipoID = tipoID; }
+
+    public String getTipoNombre() { return tipoNombre; }
+    public void   setTipoNombre(String tipoNombre) { this.tipoNombre = tipoNombre; }
+
+    /**
+     * MP-7 / MP-27 — Criterio: "Cada movimiento debe mostrar fecha, descripcion,
+     * monto, saldo posterior y tipo."
+     */
     @Override
     public String toString() {
-        return "  [" + date + "] " + movementType.getDescription() +
-                " | $" + String.format("%.2f", amount) +
-                " | Saldo: $" + String.format("%.2f", balanceAfter) +
-                " | " + description;
+        String tipo = (tipoNombre != null && !tipoNombre.isEmpty())
+                ? tipoNombre
+                : resolverTipo(tipoID);
+        return "  Fecha       : " + fechaMovimiento + "\n" +
+                "  Tipo        : " + tipo + "\n" +
+                "  Descripcion : " + descripcionMovimiento + "\n" +
+                "  Monto       : $" + String.format("%.2f", montoMovimiento) + "\n" +
+                "  Saldo post. : $" + String.format("%.2f", saldoPosterior) + "\n" +
+                "  " + "-".repeat(40);
+    }
+
+    /** Fallback si tipoNombre no viene de la BD */
+    private String resolverTipo(int id) {
+        switch (id) {
+            case 1: return "Consignacion";
+            case 2: return "Retiro";
+            case 3: return "Transferencia enviada";
+            case 4: return "Transferencia recibida";
+            case 5: return "Compra con tarjeta de credito";
+            case 6: return "Pago tarjeta de credito";
+            default: return "Operacion";
+        }
     }
 }

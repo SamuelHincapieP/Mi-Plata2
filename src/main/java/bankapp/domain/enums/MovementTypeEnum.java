@@ -1,6 +1,6 @@
 package bankapp.domain.enums;
 
-public enum MovementTypeEnum {
+public enum  MovementTypeEnum {
 
     CONSIGNACION("Consignacion"),
     RETIRO("Retiro"),

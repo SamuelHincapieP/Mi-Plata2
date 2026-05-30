@@ -3,70 +3,57 @@ package bankapp.domain;
 import bankapp.domain.enums.AccountState;
 import bankapp.domain.enums.AccountTypeEnum;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Account {
 
-    private int id;
-    private String accountNumber;
-    private double balance;
-    private AccountTypeEnum accountType;
-    private AccountState accountState;
-    private String createDate;
-    private int clientId;
-    private List<Movement> movements;
+    private int cuentaID;
+    private String numeroCuenta;
+    private double saldo;
+    private String estado;
+    private String fechaCreacion;
+    private int usuarioID;
+    private int tipoCuentaID;
 
-    // constructor completo
-    public Account(int id, String accountNumber, double balance, AccountTypeEnum accountType,
-                   AccountState accountState, String createDate, int clientId) {
-        this.id = id;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.accountState = accountState;
-        this.createDate = createDate;
-        this.clientId = clientId;
-        this.movements = new ArrayList<>();
+    public Account() {}
+
+    public Account(int cuentaID, String numeroCuenta, double saldo, String estado,
+                   String fechaCreacion, int usuarioID, int tipoCuentaID) {
+        this.cuentaID = cuentaID;
+        this.numeroCuenta = numeroCuenta;
+        this.saldo = saldo;
+        this.estado = estado;
+        this.fechaCreacion = fechaCreacion;
+        this.usuarioID = usuarioID;
+        this.tipoCuentaID = tipoCuentaID;
     }
 
-    public Account() {
-        this.movements = new ArrayList<>();
-    }
+    public int getCuentaID() { return cuentaID; }
+    public void setCuentaID(int cuentaID) { this.cuentaID = cuentaID; }
 
-    // get y set
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getNumeroCuenta() { return numeroCuenta; }
+    public void setNumeroCuenta(String numeroCuenta) { this.numeroCuenta = numeroCuenta; }
 
-    public String getAccountNumber() { return accountNumber; }
-    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+    public double getSaldo() { return saldo; }
+    public void setSaldo(double saldo) { this.saldo = saldo; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public AccountTypeEnum getAccountType() { return accountType; }
-    public void setAccountType(AccountTypeEnum accountType) { this.accountType = accountType; }
+    public String getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(String fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
-    public AccountState getAccountState() { return accountState; }
-    public void setAccountState(AccountState accountState) { this.accountState = accountState; }
+    public int getUsuarioID() { return usuarioID; }
+    public void setUsuarioID(int usuarioID) { this.usuarioID = usuarioID; }
 
-    public String getCreateDate() { return createDate; }
-    public void setCreateDate(String createDate) { this.createDate = createDate; }
-
-    public int getClientId() { return clientId; }
-    public void setClientId(int clientId) { this.clientId = clientId; }
-
-    public List<Movement> getMovements() { return movements; }
-    public void setMovements(List<Movement> movements) { this.movements = movements; }
+    public int getTipoCuentaID() { return tipoCuentaID; }
+    public void setTipoCuentaID(int tipoCuentaID) { this.tipoCuentaID = tipoCuentaID; }
 
     @Override
     public String toString() {
         return "==============================\n" +
-                "Cuenta #" + accountNumber + "\n" +
-                "Tipo    : " + accountType.getDescription() + "\n" +
-                "Saldo   : $" + String.format("%.2f", balance) + "\n" +
-                "Estado  : " + accountState.getDescription() + "\n" +
-                "Creada  : " + createDate + "\n" +
+                "Cuenta #  : " + numeroCuenta + "\n" +
+                "Saldo     : $" + String.format("%.2f", saldo) + "\n" +
+                "Estado    : " + estado + "\n" +
+                "Creada    : " + fechaCreacion + "\n" +
                 "==============================";
     }
 }
