@@ -22,6 +22,32 @@ public class AdminView {
     }
 
     // MP-39 Crear administrador — recolectar datos, validar y guardar con rol admin
+    public void createAdmin() {
+
+        String name = FormRuleValidator.readString(
+                "Ingrese el nombre del administrador",
+                ValidationRules.VALID_NAME,
+                "El nombre debe tener minimo 3 letras y no contener numeros");
+
+        String email = FormRuleValidator.readString(
+                "Ingrese el correo",
+                ValidationRules.VALID_EMAIL,
+                "Correo invalido. Formato: ejemplo@correo.com");
+
+        String password = FormRuleValidator.readString(
+                "Ingrese la clave (min 8 chars, 1 mayuscula, 1 numero, 1 especial @#$%^&+=!*)",
+                ValidationRules.VALID_PASSWORD,
+                "Clave no segura. Ejemplo valido: Admin123!");
+
+        String cargo = FormValidator.validateString("Ingrese el cargo (ej: Gerente, Cajero, Supervisor)");
+
+        Admin admin = adminService.createAdmin(name, email, password, cargo);
+
+        if (admin != null) {
+            System.out.println("Administrador creado exitosamente!");
+            System.out.println(admin);
+        }
+    }
 
     // MP-40 Listar administradores — mostrar ID, nombre, correo y cargo de cada admin
 
