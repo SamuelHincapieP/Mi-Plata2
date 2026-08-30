@@ -9,14 +9,11 @@ public class Client extends Users {
         super(id, name, email, password, attemptsFailed, accountBlocked);
         this.clientType = clientType;
     }
-
     public Client() {
         super();
     }
-
     public String getClientType() { return clientType; }
     public void setClientType(String clientType) { this.clientType = clientType; }
-
     @Override
     public String toString() {
         return "==============================\n" +
@@ -25,6 +22,5 @@ public class Client extends Users {
                 "Email    : " + email + "\n" +
                 "Tipo     : " + clientType + "\n" +
                 "Bloqueado: " + accountBlocked + "\n" +
-                "==============================";
-    }
+                "==============================";}
 }
