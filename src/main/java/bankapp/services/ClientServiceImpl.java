@@ -58,18 +58,27 @@ public class ClientServiceImpl implements ClientService {
 
     // MP-10 Editar perfil / MP-11 Cambio de contraseña / MP-21 Recuperar contraseña
     // MP-25 Actualizar información personal — actualizar campos del cliente
+
+
     @Override
     public Client updateClient(int id, String name, String email, String password, String clientType) {
         Client client = clientRepository.findClientById(id);
+        
         if (client != null) {
             client.setName(name);
             client.setEmail(email);
             client.setPassword(PasswordUtil.hash(password));
             client.setClientType(clientType);
             return clientRepository.updateClient(client);
+
         } else {
+
+
             System.out.println("Cliente no encontrado con ID: " + id);
             return null;
+
+
+
         }
     }
 
