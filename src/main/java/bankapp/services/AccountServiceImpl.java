@@ -82,6 +82,10 @@ public class AccountServiceImpl implements AccountService {
             System.out.println("Tarjeta de credito creada");
             System.out.println("  Cupo total   : $" + String.format("%.2f", cupoTC));
             System.out.println("  Tasa mensual : 2.5%");
+
+
+
+            
         }
 
         // MP-26 Mensaje de transacción exitosa — registrar movimiento de depósito inicial
