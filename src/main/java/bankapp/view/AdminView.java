@@ -50,6 +50,23 @@ public class AdminView {
     }
 
     // MP-40 Listar administradores — mostrar ID, nombre, correo y cargo de cada admin
+    public void getAllAdmins() {
+        List<Admin> admins = adminService.getAllAdmins();
+
+        if (admins.isEmpty()) {
+            System.out.println("No hay administradores registrados");
+            return;
+        }
+
+        System.out.println("\n--- Lista de Administradores ---");
+        for (Admin admin : admins) {
+            System.out.println("ID    : " + admin.getId());
+            System.out.println("Nombre: " + admin.getName());
+            System.out.println("Correo: " + admin.getEmail());
+            System.out.println("Cargo : " + admin.getCargo());
+            System.out.println("------------------------------");
+        }
+    }
 
     // MP-3 Administración de usuarios / MP-22 Listar usuarios registrados — listar todos los clientes
     public void getAllClients() {
